@@ -20,6 +20,7 @@
 #include <thread>
 #include <memory>
 
+#include "Common/System/Display.h"
 #include "Common/Thread/ThreadUtil.h"
 #include "Common/Profiler/Profiler.h"
 #include "Common/TimeUtil.h"
@@ -35,6 +36,7 @@
 #include "Core/ConfigValues.h"
 #include "Core/Debugger/MemBlockInfo.h"
 #include "Core/ELF/ParamSFO.h"
+#include "Core/MemMap.h"
 #include "Core/MemMapHelpers.h"
 #include "Core/System.h"
 #include "Core/HDRemaster.h"
@@ -2028,6 +2030,8 @@ static u32 sceIoDevctl(const char *name, int cmd, u32 argAddr, int argLen, u32 o
 			EMULATOR_DEVCTL__GET_SCALE,
 			EMULATOR_DEVCTL__GET_AXIS,
 			EMULATOR_DEVCTL__GET_VKEY,
+			EMULATOR_DEVCTL__GET_MOUSE_X,
+			EMULATOR_DEVCTL__GET_MOUSE_Y
 		};
 
 		switch (cmd) {
@@ -2099,6 +2103,16 @@ static u32 sceIoDevctl(const char *name, int cmd, u32 argAddr, int argLen, u32 o
 		case EMULATOR_DEVCTL__GET_VKEY:
 			if (Memory::IsValidAddress(outPtr) && (argAddr >= 0 && argAddr < NKCODE_MAX)) {
 				Memory::Write_U8(HLEPlugins::GetKey(argAddr), outPtr);
+			}
+			return 0;
+		case EMULATOR_DEVCTL__GET_MOUSE_X:
+			if (Memory::IsValidAddress(outPtr)) {
+				Memory::Write_Float(HLEPlugins::PluginDataMouseX, outPtr);
+			}
+			return 0;
+		case EMULATOR_DEVCTL__GET_MOUSE_Y:
+			if (Memory::IsValidAddress(outPtr)) {
+				Memory::Write_Float(HLEPlugins::PluginDataMouseY, outPtr);
 			}
 			return 0;
 		}

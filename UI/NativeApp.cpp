@@ -111,6 +111,7 @@
 #include "Core/ThreadPools.h"
 
 #include "GPU/GPUInterface.h"
+#include "GPU/Common/PresentationCommon.h"
 #include "UI/AudioCommon.h"
 #include "UI/BackgroundAudio.h"
 #include "UI/ControlMappingScreen.h"
@@ -1421,6 +1422,22 @@ void NativeMouseDelta(float dx, float dy) {
 	MouseEventProcessor::ProcessDelta(time_now_d(), dx, dy);
 
 	SendMouseDeltaAxis();
+}
+
+void NativeMousePos(float x, float y) {
+	if (!g_Config.bMouseControl)
+		return;
+
+	float screenWidth = g_display.pixel_xres;
+	float screenHeight = g_display.pixel_yres;
+
+	FRect rc;
+        CalculateDisplayOutputRect(&rc, 480.0f, 272.0f,
+                                   GetScreenFrame(screenWidth, screenHeight),
+                                   ROTATION_LOCKED_HORIZONTAL);
+
+        HLEPlugins::PluginDataMouseX = (x - rc.x) / rc.w;
+	HLEPlugins::PluginDataMouseY = (y - rc.y) / rc.h;
 }
 
 void NativeAccelerometer(float tiltX, float tiltY, float tiltZ) {

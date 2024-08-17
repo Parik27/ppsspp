@@ -52,6 +52,7 @@ bool NativeKey(const KeyInput &key);
 void NativeAxis(const AxisInput *axis, size_t count);
 void NativeAccelerometer(float tiltX, float tiltY, float tiltZ);
 void NativeMouseDelta(float dx, float dy);
+void NativeMousePos(float x, float y);
 
 // Called when it's process a frame, including rendering. If the device can keep up, this
 // will be called sixty times per second. Main thread.

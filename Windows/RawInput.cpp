@@ -318,6 +318,7 @@ namespace WindowsRawInput {
 		key.deviceId = DEVICE_ID_MOUSE;
 
 		NativeMouseDelta(raw->data.mouse.lLastX, raw->data.mouse.lLastY);
+		NativeMousePos(mouseX, mouseY);
 
 		static const int rawInputDownID[5] = {
 			RI_MOUSE_LEFT_BUTTON_DOWN,

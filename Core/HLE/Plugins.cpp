@@ -36,6 +36,8 @@ namespace HLEPlugins {
 
 std::mutex g_inputMutex;
 float PluginDataAxis[JOYSTICK_AXIS_MAX];
+float PluginDataMouseX = 0.0f;
+float PluginDataMouseY = 0.0f;
 std::map<int, uint8_t> PluginDataKeys;
 
 static bool anyEnabled = false;

@@ -1003,6 +1003,7 @@ static void ProcessSDLEvent(SDL_Window *window, const SDL_Event &event, InputSta
 			input.id = 0;
 			NativeTouch(input);
 		}
+		NativeMousePos (event.motion.x, event.motion.y);
 		NativeMouseDelta(event.motion.xrel, event.motion.yrel);
 		break;
 	case SDL_MOUSEBUTTONUP:
