@@ -36,6 +36,7 @@
 #include "Core/ConfigValues.h"
 #include "Core/Debugger/MemBlockInfo.h"
 #include "Core/ELF/ParamSFO.h"
+#include "Core/MemFault.h"
 #include "Core/MemMap.h"
 #include "Core/MemMapHelpers.h"
 #include "Core/System.h"
@@ -2031,7 +2032,8 @@ static u32 sceIoDevctl(const char *name, int cmd, u32 argAddr, int argLen, u32 o
 			EMULATOR_DEVCTL__GET_AXIS,
 			EMULATOR_DEVCTL__GET_VKEY,
 			EMULATOR_DEVCTL__GET_MOUSE_X,
-			EMULATOR_DEVCTL__GET_MOUSE_Y
+			EMULATOR_DEVCTL__GET_MOUSE_Y,
+			EMULATOR_DEVCTL__GET_STACK_TRACE
 		};
 
 		switch (cmd) {
@@ -2113,6 +2115,14 @@ static u32 sceIoDevctl(const char *name, int cmd, u32 argAddr, int argLen, u32 o
 		case EMULATOR_DEVCTL__GET_MOUSE_Y:
 			if (Memory::IsValidAddress(outPtr)) {
 				Memory::Write_Float(HLEPlugins::PluginDataMouseY, outPtr);
+			}
+			return 0;
+		case EMULATOR_DEVCTL__GET_STACK_TRACE:
+			if (Memory::IsValidRange(outPtr, outLen)) {
+				std::vector<MIPSStackWalk::StackFrame> stackFrames = WalkCurrentStack(-1);
+				std::string stackTrace = FormatStackTrace(stackFrames);
+				Memory::Memcpy(outPtr, stackTrace.c_str(), std::min(stackTrace.size(), size_t(outLen)));
+
 			}
 			return 0;
 		}
